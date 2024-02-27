@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('request-form');
 });
+
+Route::post('/', 'IllustrationFormController@storeRequest')->name('ill.form.submit');
