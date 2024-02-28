@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Illustration request form:</h1>
-        <form action="{{ route('ill.form.submit') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('illform.submit') }}" method="post" enctype="multipart/form-data">
             @csrf
 
             <label>Is this a journal cover illustration request?</label><br>

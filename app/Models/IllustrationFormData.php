@@ -24,6 +24,7 @@ class IllustrationFormData extends Model
     ];
     protected $casts = [
         'deadline' => 'boolean',
-        'date' => 'date,'
+        'date' => 'date',
+        'email' => 'email'
     ];
 }

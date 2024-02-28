@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IllustrationFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('request-form');
-});
+// Route::get('/illustrationform', function () {
+//     return view('request-form');
+// });
+//'IllustrationFormController@storeRequest'
 
-Route::post('/', 'IllustrationFormController@storeRequest')->name('ill.form.submit');
+Route::get('/illustrationRequest', [IllustrationFormController::class, 'viewForm'])->name('illform.view');
+Route::post('/illustrationRequest', [IllustrationFormController::class, 'storeRequest'])->name('illform.submit');
