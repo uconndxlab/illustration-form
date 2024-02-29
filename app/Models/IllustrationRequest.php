@@ -9,15 +9,16 @@ class IllustrationRequest extends Model
 {
     protected $fillable = [
         //should be names of table columns
-        'journal_cover_request', 
+        'is_journal_cover_request', 
+        'journal_name',
         'description', 
         'has_deadline', 
-        'date_deadline',
-        'journal_name', 
+        'date_deadline', 
         'name', 
         'email', 
         'phone', 
         'kfs_account',
+        'has_references',
         'reference_path'
     ];
 }

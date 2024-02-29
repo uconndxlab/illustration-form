@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\Rule;
 use App\Models\IllustrationRequest;
 
 class IllustrationFormController extends Controller
@@ -12,39 +14,45 @@ class IllustrationFormController extends Controller
     }
 
     public function storeRequest(Request $request) : RedirectResponse {
-        // $request -> validate([
-        //     'journal_cover' => ['required', 'boolean'],                 //enum?
-        //     'description' => ['required', 'alpha_dash', 'max:500'], 
-        //     'deadline' => ['required', 'boolean'], 
-        //     'date' => ['date'], 
-        //     'article_draft_ref' => ['image'], 
-        //     'photos_ref.*' => ['image'],                                //how do the image arrays work??
-        //     'add_ill_ref.*' => ['image'], 
-        //     'init_ill_ref' => ['image'], 
-        //     'journal_name' => ['alpha_dash', 'max:160'], 
-        //     'user_name' => ['required', 'alpha_dash', 'max:100'], 
-        //     'email' => ['required', 'email'], 
-        //     'phone' => ['required', 'digits:10'],                       //fix
-        //     'kfs_account' => ['digits:10']                              //???
-        // ]);
+        $request -> validate([
+            'journal_cover' => ['required', 'in:no_paid,yes_free'],
+            'description' => ['required', 'string', 'max:1000'],
+            'deadline' => ['required', 'boolean'],
+            'date' => [
+                Rule::requiredIf(function () use ($request) {
+                    return $request->input('deadline');
+                }), 'nullable', 'date'],
+            'article_draft_ref' => ['image'],
+            'photos_ref.*' => ['image'],
+            'add_ill_ref.*' =>['image'],
+            'init_ill_ref' => ['image'],
+            'journal_name' => ['nullable', 'string', 'max:160'],
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email'],
+            'phone' => ['required', 'digits:10'],           //to adjust later
+            'kfs_account' => [
+                Rule::requiredIf(function () use ($request) {
+                    return ($request->input('journal_cover') == 'no_paid');
+                }),'nullable', 'digits:10'],                            //do not really know what valid KFS is
+        ]);
 
+        //data from form
         $formData = new IllustrationRequest();
-        $formData->journal_cover_request = $request->input('journal_cover');
+        $formData->is_journal_cover_request = $request->input('journal_cover');
+        $formData->journal_name = $request->input('journal_name');
         $formData->description = $request->input('description');
         $formData->has_deadline = $request->input('deadline');
         $formData->date_deadline = $request->input('date');
-        // $formData->article_draft_ref = $request->input('article_draft_ref');
-        // $formData->photos_ref[] = $request->input('photos_ref[]');
-        // $formData->add_ill_ref[] = $request->input('add_ill_ref[]');
-        // $formData->init_ill_ref = $request->input('init_ill_ref');
-        $formData->journal_name = $request->input('journal_name');
-        $formData->name = $request->input('user_name');
+        $formData->name = $request->input('name');
         $formData->email = $request->input('email');
         $formData->phone = $request->input('phone');
         $formData->kfs_account = $request->input('kfs_account');
-        $formData->reference_path = 'empty';
+        
+        //reference image handling
+        $formData->has_references = 'False';
+        $formData->reference_path = '';
 
         $formData->save();
-        return redirect()->back()->with('success', 'Request complete!');
+        return redirect()->route('illform.view')->with('success', 'Request complete!');
     }
 }
