@@ -9,9 +9,9 @@
             @csrf
 
             <label>Is this a journal cover illustration request?</label><br>
-            <input type="radio" id="yes_jc" name="journal_cover" value="Yes" required>
+            <input type="radio" id="yes_jc" name="journal_cover" value="yes_free" required>
             <label for="yes_jc">Yes *Free Service</label><br>
-            <input type="radio" id="no_jc" name="journal_cover" value="No" required>
+            <input type="radio" id="no_jc" name="journal_cover" value="no_paid" required>
             <label for="no_jc">No *Paid Service</label><br><br>
 
             <label for="ill_desc">Provide a brief description of what you would like illustrated:</label><br>
@@ -19,10 +19,10 @@
             <br>
 
             <label>Is there a hard deadline?</label><br>
-            <input type="radio" id="yes_deadline" name="deadline" value="Yes" required>
+            <input type="radio" id="deadline" name="deadline" value="Yes" required>
             <label for="yes_jc">Yes</label>
             <input type="date" id="date_deadline" name="date"><br>
-            <input type="radio" id="no_deadline" name="deadline" value="No" required>
+            <input type="radio" id="deadline" name="deadline" value="No" required>
             <label for="no_deadline">No</label><br>
             <br>
 

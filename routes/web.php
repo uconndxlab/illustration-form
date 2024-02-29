@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IllustrationFormController;
+use App\Http\Controllers\testController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,10 @@ use App\Http\Controllers\IllustrationFormController;
 |
 */
 
-// Route::get('/illustrationform', function () {
-//     return view('request-form');
-// });
-//'IllustrationFormController@storeRequest'
-
 Route::get('/illustrationRequest', [IllustrationFormController::class, 'viewForm'])->name('illform.view');
 Route::post('/illustrationRequest', [IllustrationFormController::class, 'storeRequest'])->name('illform.submit');
+
+
+//testing page
+Route::get('/test', [testController::class, 'viewForm'])->name('test.view');
+Route::post('/test', [testController::class, 'storeForm'])->name('test.submit');
