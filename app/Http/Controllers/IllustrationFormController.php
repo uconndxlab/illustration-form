@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rule;
 use App\Models\IllustrationRequest;
+use Illuminate\Support\Facades\Storage;
 
 class IllustrationFormController extends Controller
 {
@@ -47,12 +48,36 @@ class IllustrationFormController extends Controller
         $formData->email = $request->input('email');
         $formData->phone = $request->input('phone');
         $formData->kfs_account = $request->input('kfs_account');
-        
-        //reference image handling
-        $formData->has_references = 'False';
-        $formData->reference_path = '';
 
+        //handling for reference images
+        if ($request->hasFile('article_draft_ref') || $request->hasFile('photos_ref') || $request->hasFile('add_ill_ref') || $request->hasFile('init_ill_ref')) {
+            $formData->has_references = TRUE;
+            $formData->save();
+            //get id
+            $id = $formData->id;
+            //build the path and make directory
+            $refPath = 'request-id-'.$id;
+            $formData->reference_path = $refPath;
+
+            //uploading the files - location and naming
+            if ($request->hasFile('article_draft_ref')) {
+                $file = $request->file('article_draft_ref');
+                $file->storeAs('illustrationReferences/'.$refPath, 'articleDraft-'.$id.'.'.$file->extension());
+            }
+            if ($request->hasFile('init_ill_ref')) {
+                $file = $request->file('init_ill_ref');
+                $file->storeAs('illustrationReferences/'.$refPath, 'initialIllustration-'.$id.'.'.$file->extension());
+            }
+        }
+        else {
+            $formData->has_references = FALSE;
+        }
+
+        //save request to database
         $formData->save();
         return redirect()->route('illform.view')->with('success', 'Request complete!');
+
+
+        //ADD VALIDATION FOR SIZE
     }
 }
