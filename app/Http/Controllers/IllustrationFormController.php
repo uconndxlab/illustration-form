@@ -23,10 +23,10 @@ class IllustrationFormController extends Controller
                 Rule::requiredIf(function () use ($request) {
                     return $request->input('deadline');
                 }), 'nullable', 'date'],
-            'article_draft_ref' => ['image'],
-            'photos_ref.*' => ['image'],
-            'add_ill_ref.*' =>['image'],
-            'init_ill_ref' => ['image'],
+            'article_draft_ref' => ['image', 'max:2500'],       //current max size per file is 5 MB - set in php.ini
+            'photos_ref.*' => ['image', 'max:2500'],
+            'add_ill_ref.*' =>['image', 'max:2500'],
+            'init_ill_ref' => ['image', 'max:2500'],
             'journal_name' => ['nullable', 'string', 'max:160'],
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email'],
@@ -64,6 +64,20 @@ class IllustrationFormController extends Controller
                 $file = $request->file('article_draft_ref');
                 $file->storeAs('illustrationReferences/'.$refPath, 'articleDraft-'.$id.'.'.$file->extension());
             }
+            if ($request->hasFile('photos_ref')) {
+                $count = 1;
+                foreach ($request->file('photos_ref') as $file) {
+                    $file->storeAs('illustrationReferences/'.$refPath, 'photosContentStyle-'.$id.'-'.$count.'.'.$file->extension());
+                    $count++;
+                }
+            }
+            if ($request->hasFile('add_ill_ref')) {
+                $count = 1;
+                foreach ($request->file('add_ill_ref') as $file) {
+                    $file->storeAs('illustrationReferences/'.$refPath, 'additionalIllustrations-'.$id.'-'.$count.'.'.$file->extension());
+                    $count++;
+                }
+            }
             if ($request->hasFile('init_ill_ref')) {
                 $file = $request->file('init_ill_ref');
                 $file->storeAs('illustrationReferences/'.$refPath, 'initialIllustration-'.$id.'.'.$file->extension());
@@ -77,7 +91,6 @@ class IllustrationFormController extends Controller
         $formData->save();
         return redirect()->route('illform.view')->with('success', 'Request complete!');
 
-
-        //ADD VALIDATION FOR SIZE
+        //how do we want to limit size - number of images? size of images? size of post?
     }
 }
